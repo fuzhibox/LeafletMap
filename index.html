@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<link rel="stylesheet" href="css/leaflet.css" />
+		<link rel="stylesheet" href="css/esrileafletAPI.css" />
+		<script src="js/leaflet.js"></script>
+		<script type="text/javascript" src="js/esri-leaflet.js" ></script>
+		<script type="text/javascript" src="js/LeafletMap.js" ></script>
+		<title>第一个leaflet地图</title>
+	</head>
+	<body onload="init()">
+		<div id="map"></div>
+		<!--
+        	作者：77211356@qq.com
+        	时间：2018-9-22
+        	描述：底图切换
+        -->
+		<div id="basemaps-wrapper" class="leaflet-bar">
+		  <select name="basemaps" id="basemaps" onChange="changeBasemap(basemaps)">
+		    <option value="TianDiTuSat">TianDiTuSat</option>
+		    <option value="Mapbox_street">Mapbox_street</option>
+		    <option value="Topographic">Topographic</option>
+		    <option value="Streets">Streets</option>
+		    <option value="NationalGeographic">National Geographic</option>
+		    <option value="Oceans">Oceans</option>
+		    <option value="Gray">Gray</option>
+		    <option value="DarkGray">Dark Gray</option>
+		    <option value="Imagery">Imagery</option>
+		    <option value="ImageryClarity">Imagery (Clarity)</option>
+		    <option value="ShadedRelief">Shaded Relief</option>
+		  </select>
+		</div>
+	</body>
+</html>
