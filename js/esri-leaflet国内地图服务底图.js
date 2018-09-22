@@ -890,6 +890,15 @@ var EsriLeaflet = {
               subdomains: ['0', '1', '2', '3', '4', '5', '6', '7']
             }
           },
+          //GaoDe卫星底图服务
+          GoogleMap: {
+            urlTemplate: "http://www.google.cn/maps/vt?lyrs=m@189&gl=cn&x={x}&y={y}&z={z}", 
+              options: {
+        			minZoom: 1,
+              maxZoom: 19,
+              subdomains: []
+            }
+        },
 					//天地图卫星底图服务
           TianDiTuSat: {
             urlTemplate: "http://t{s}.tianditu.cn/DataServer?T=cia_w&X={x}&Y={y}&L={z}", 
