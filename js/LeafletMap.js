@@ -5,15 +5,21 @@ var layerLabels;
 function init(){
 	//map = L.map('map').setView([30.56486,114.353622 ], 11);  
 	map = L.map('map').setView([45.526, -122.667], 13);
-	L.esri.basemapLayer('Imagery').addTo(map);
+	L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png?{foo}', {foo: 'bar'}).addTo(map);
+	
+	  var trees = L.esri.featureLayer({
+	    url: 'https://services.arcgis.com/rOo16HdIMeOBI4Mb/arcgis/rest/services/Heritage_Trees_Portland/FeatureServer/0'
+	  }).addTo(map);
 
-  var trees = L.esri.featureLayer({
-    url: 'https://services.arcgis.com/rOo16HdIMeOBI4Mb/arcgis/rest/services/Heritage_Trees_Portland/FeatureServer/0'
-  }).addTo(map);
+	//zoom in all features
+	trees.query().bounds(function (error, latlngbounds) {
+	    map.fitBounds(latlngbounds);
+	  });
 
-  trees.bindPopup(function (layer) {
-    return L.Util.template('<p>{COMMON_NAM}<br>{SCIENTIFIC}<br>{NOTES}</p>', layer.feature.properties);
-  });
+	//popup windows
+	trees.bindPopup(function (layer) {
+	    return L.Util.template('<p>{COMMON_NAM}<br>{SCIENTIFIC}<br>{NOTES}</p>', layer.feature.properties);
+	});
 	
 	
 	//	L.esri.tiledMapLayer({
@@ -24,14 +30,24 @@ function init(){
 	//L.esri.basemapLayer('Imagery').addTo(map);
 	//L.esri.basemapLayer('ImageryLabels').addTo(map);
 
-	//L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png?{foo}', {foo: 'bar'}).addTo(map);
+	var arcgisOnline = L.esri.Geocoding.arcgisOnlineProvider();
 
-	//  L.tileLayer(	'https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
-	//	    attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
-	//	    maxZoom: 18,
-	//	    id: 'mapbox.streets',
-	//	    accessToken: 'pk.eyJ1IjoiY29va2llcyIsImEiOiJjaW9sOGpwYjgwMGJtdmtqYmFieGYwcGR5In0.ot-rN7HEza9xJSijmrAOUQ'
-	//	}).addTo(map);
+	  var searchControl = L.esri.Geocoding.geosearch({
+	    providers: [
+	      arcgisOnline,
+	      L.esri.Geocoding.featureLayerProvider({
+	        url: 'https://services.arcgis.com/uCXeTVveQzP4IIcx/arcgis/rest/services/gisday/FeatureServer/0/',
+	        searchFields: ['Name', 'Organization'],
+	        label: 'GIS Day Events',
+	        bufferRadius: 5000,
+	        formatSuggestion: function(feature){
+	          return feature.properties.Name + ' - ' + feature.properties.Organization;
+	        }
+	      })
+	    ]
+	  }).addTo(map);
+	
+	
 	
 }
 //设置底图
@@ -48,13 +64,10 @@ function setBasemap(basemap) {
     }
 
     if (basemap === 'Topographic'
-     || basemap === 'Mapbox_street'
-     || basemap === 'TianDiTuSat'
-     || basemap === 'GoogleMap'
-     || basemap === 'Gray'
-     || basemap === 'DarkGray'
+       || basemap === 'Streets'
+//   || basemap === 'TianDiTuSat'
+//   || basemap === 'GoogleMap'
      || basemap === 'Imagery'
-     || basemap === 'Terrain'
    ) {
       layerLabels = L.esri.basemapLayer(basemap + 'Labels');
       map.addLayer(layerLabels);
