@@ -7,7 +7,7 @@ function init(){
 	//map = L.map('map').setView([45.526, -122.667], 13);
 	L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png?{foo}', {foo: 'bar'}).addTo(map);
 	
-	loadWFS("urbanlayer:HubeiBoundary","EPSG:3857")
+	loadWFS("Hubei:HubeiBoundary","EPSG:3857")
 	
 //	  var trees = L.esri.featureLayer({
 //	    url: 'https://services.arcgis.com/rOo16HdIMeOBI4Mb/arcgis/rest/services/Heritage_Trees_Portland/FeatureServer/0'
@@ -15,12 +15,12 @@ function init(){
 	
 	//http://localhost:8080/geoserver/urbanlayer/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=urbanlayer:HubeiBoundary&maxFeatures=50&outputFormat=application%2Fjson
 
-//	//zoom in all features
+	//zoom in all features
 //	trees.query().bounds(function (error, latlngbounds) {
 //	    map.fitBounds(latlngbounds);
 //	  });
 //
-//	//popup windows
+	//popup windows
 //	trees.bindPopup(function (layer) {
 //	    return L.Util.template('<p>{COMMON_NAM}<br>{SCIENTIFIC}<br>{NOTES}</p>', layer.feature.properties);
 //	});
@@ -94,8 +94,9 @@ function loadWFS(layerName,epsg){
 					outputFormat:'application/json',
 					srsName:epsg
 			};
-			var rootWFS= 'http://localhost:8080/geoserver/urbanlayer/ows?';
+			var rootWFS= 'http://localhost:8080/geoserver/Hubei/ows?';
 			var u = rootWFS + L.Util.getParamString(param,rootWFS);
+			alert('u=='+u);
 			$.ajax({
 				url: u, 
 				dataType:'json',
