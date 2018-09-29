@@ -3,36 +3,64 @@ var layer;
 var layerLabels;
 //地图初始化
 function init(){
-	map = L.map('map').setView([30.56486,114.353622 ], 11);  
+	map = L.map('map').setView([30.201885, 112.524585 ], 15);  
 	//map = L.map('map').setView([45.526, -122.667], 13);
-	L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png?{foo}', {foo: 'bar'}).addTo(map);
 	
-	loadWFS("Hubei:HubeiBoundary","EPSG:3857")
-	
-//	  var trees = L.esri.featureLayer({
-//	    url: 'https://services.arcgis.com/rOo16HdIMeOBI4Mb/arcgis/rest/services/Heritage_Trees_Portland/FeatureServer/0'
-//	  }).addTo(map);
-	
-	//http://localhost:8080/geoserver/urbanlayer/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=urbanlayer:HubeiBoundary&maxFeatures=50&outputFormat=application%2Fjson
-
-	//zoom in all features
-//	trees.query().bounds(function (error, latlngbounds) {
-//	    map.fitBounds(latlngbounds);
-//	  });
-//
-	//popup windows
-//	trees.bindPopup(function (layer) {
-//	    return L.Util.template('<p>{COMMON_NAM}<br>{SCIENTIFIC}<br>{NOTES}</p>', layer.feature.properties);
-//	});
+	//底图切换
+	var openstreetmap=L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png?{foo}', {foo: 'bar'});//.addTo(map);
+	var mapboxstreet = L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
+	    attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+	    maxZoom: 18,
+	    id: 'mapbox.streets',
+	    accessToken: 'pk.eyJ1IjoibGl6eWFncnMiLCJhIjoiY2owOTAyMHo1MDdyMDJxb3VzOTB2czZmNSJ9.5iZSlr7iLwBh9ebR6KMGeg'
+	})
 	
 	
-	//	L.esri.tiledMapLayer({
-	//	  url: 'https://services.arcgisonline.com/ArcGIS/rest/services/USA_Topo_Maps/MapServer',
-	//	  maxZoom: 12
-	//	}).addTo(map);
+	//荆州市县界
+	var url='http://localhost:8080/geoserver/Hubei/wms'
+	const JingzhouCountyBound = L.tileLayer.wms(url, {
+		layers: 'Hubei:JingzhouCountyBound',
+		format: "image/png",
+		crs: L.CRS.EPSG3857,
+		opacity: 0.5,
+		transparent: true
+	});
 	
-	//L.esri.basemapLayer('Imagery').addTo(map);
-	//L.esri.basemapLayer('ImageryLabels').addTo(map);
+	//三湖农场边界
+	const ThreeLakeFarmBound = L.tileLayer.wms(url, {
+		layers: 'Hubei:ThreeLakeFarmBound',
+		format: "image/png",
+		crs: L.CRS.EPSG3857,
+		opacity: 0.5,
+		transparent: true
+	});
+	
+	//三湖农场天顺合作社实验田块
+	const ThreeLakeFarmRiceExperimentalPlot = L.tileLayer.wms(url, {
+		layers: 'Hubei:ThreeLakeFarmRiceExperimentalPlot',
+		format: "image/png",
+		crs: L.CRS.EPSG3857,
+		opacity: 0.5,
+		transparent: true
+	});
+	
+	//定义底图
+	var baseMaps = {
+	    "OpenstreetMap": openstreetmap,
+	    "MapboxStreets": mapboxstreet
+	};
+	
+	//定义专题图层
+	var overlayMaps = {
+		"JingzhouCountyBound": JingzhouCountyBound,
+		"ThreeLakeFarmBound": ThreeLakeFarmBound,
+	    "ThreeLakeFarmRiceExperimentalPlot": ThreeLakeFarmRiceExperimentalPlot
+	};
+	
+	//加载底图与专题图层
+	L.control.layers(baseMaps, overlayMaps).addTo(map);
+	
+	//loadWFS("Hubei:HubeiBoundary","EPSG:3857")
 
 	var arcgisOnline = L.esri.Geocoding.arcgisOnlineProvider();
 
@@ -50,39 +78,7 @@ function init(){
 	      })
 	    ]
 	  }).addTo(map);
-	
-	
-	
 }
-//设置底图
-function setBasemap(basemap) {
-    if (layer) {
-      map.removeLayer(layer);
-    }
-
-    layer = L.esri.basemapLayer(basemap);
-    map.addLayer(layer);
-
-    if (layerLabels) {
-      map.removeLayer(layerLabels);
-    }
-
-    if (basemap === 'Topographic'
-       || basemap === 'Streets'
-//   || basemap === 'TianDiTuSat'
-//   || basemap === 'GoogleMap'
-     || basemap === 'Imagery'
-   ) {
-      layerLabels = L.esri.basemapLayer(basemap + 'Labels');
-      map.addLayer(layerLabels);
-    }
-  }
-
- function changeBasemap(basemaps){
-    var basemap = basemaps.value;
-    setBasemap(basemap);
- }
- 
  
  //加载WFS服务
 function loadWFS(layerName,epsg){
@@ -96,7 +92,7 @@ function loadWFS(layerName,epsg){
 			};
 			var rootWFS= 'http://localhost:8080/geoserver/Hubei/ows?';
 			var u = rootWFS + L.Util.getParamString(param,rootWFS);
-			alert('u=='+u);
+			//alert('u=='+u);
 			$.ajax({
 				url: u, 
 				dataType:'json',
@@ -122,3 +118,16 @@ function loadWFS(layerName,epsg){
 				}).addTo(map);
 			}
 	} 
+	
+
+function loadwms(){
+	var url='http://localhost:8080/geoserver/Hubei/wms?service=WMS?'
+	const bounderLayer = L.tileLayer.wms("url", {
+		layers: 'Hubei:HubeiBoundary',
+		format: "image/png",
+		crs: L.CRS.EPSG3857,
+		opacity: 0.5,
+		transparent: true
+	});
+	bounderLayer.addTo(map)	
+}
