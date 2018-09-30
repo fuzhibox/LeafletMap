@@ -4,7 +4,6 @@ var layerLabels;
 //地图初始化
 function init(){
 	map = L.map('map').setView([30.201885, 112.524585 ], 15);  
-	//map = L.map('map').setView([45.526, -122.667], 13);
 	
 	//底图切换
 	var openstreetmap=L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png?{foo}', {foo: 'bar'});//.addTo(map);
@@ -78,56 +77,4 @@ function init(){
 	      })
 	    ]
 	  }).addTo(map);
-}
- 
- //加载WFS服务
-function loadWFS(layerName,epsg){
-			var param = {
-					service:'WFS',
-					version:'1.0.0',
-					request:'GetFeature',
-					typeName:layerName,
-					outputFormat:'application/json',
-					srsName:epsg
-			};
-			var rootWFS= 'http://localhost:8080/geoserver/Hubei/ows?';
-			var u = rootWFS + L.Util.getParamString(param,rootWFS);
-			//alert('u=='+u);
-			$.ajax({
-				url: u, 
-				dataType:'json',
-				success:loadWfsHandler,
-			});
-			var layer;
-			function loadWfsHandler(data){
-				console.log(data);
-				layer = L.geoJson(data,{
-// 					style:function(feature){
-// 						return {
-// 							stroke:true,
-// 							color:'#F80909',
-// 							opacity: 1,
-// 			                fillOpacity: 0.9,
-// 			                fillColor: '#F80909',
-// 							weight:5
-// 						}
-// 					},
-					pointToLayer:function(featyre,latlng){
-						
-					}
-				}).addTo(map);
-			}
-	} 
-	
-
-function loadwms(){
-	var url='http://localhost:8080/geoserver/Hubei/wms?service=WMS?'
-	const bounderLayer = L.tileLayer.wms("url", {
-		layers: 'Hubei:HubeiBoundary',
-		format: "image/png",
-		crs: L.CRS.EPSG3857,
-		opacity: 0.5,
-		transparent: true
-	});
-	bounderLayer.addTo(map)	
 }
