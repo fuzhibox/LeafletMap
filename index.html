@@ -11,44 +11,14 @@
 	    integrity="sha512-nMMmRyTVoLYqjP9hrbed9S+FzjZHW5gY1TWCHA5ckwXZBadntCNs8kEqAWdrb9O7rxbCaA4lKTIWjDXZxflOcA=="
 	    crossorigin=""></script>
 	
-	
-	    <!-- Load Esri Leaflet from CDN -->
-	    <script src="https://unpkg.com/esri-leaflet@2.2.3/dist/esri-leaflet.js"
-	    integrity="sha512-YZ6b5bXRVwipfqul5krehD9qlbJzc6KOGXYsDjU9HHXW2gK57xmWl2gU6nAegiErAqFXhygKIsWPKbjLPXVb2g=="
-	    crossorigin=""></script>
-	    
-	    <!-- Load Esri Leaflet Geocoder from CDN -->
-		  <link rel="stylesheet" href="https://unpkg.com/esri-leaflet-geocoder@2.2.13/dist/esri-leaflet-geocoder.css"
-		    integrity="sha512-v5YmWLm8KqAAmg5808pETiccEohtt8rPVMGQ1jA6jqkWVydV5Cuz3nJ9fQ7ittSxvuqsvI9RSGfVoKPaAJZ/AQ=="
-		    crossorigin="">
-		  <script src="https://unpkg.com/esri-leaflet-geocoder@2.2.13/dist/esri-leaflet-geocoder.js"
-		    integrity="sha512-zdT4Pc2tIrc6uoYly2Wp8jh6EPEWaveqqD3sT0lf5yei19BC1WulGuh5CesB0ldBKZieKGD7Qyf/G0jdSe016A=="
-		    crossorigin=""></script>
-	    
-	    <!-- Load jquery from CDN -->
-		<script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
-
-	    
 	    <!--link the style of index.html-->
-		<link rel="stylesheet" href="css/esrileafletAPI.css" />
+		<link rel="stylesheet" href="css/leafletAPI.css" />
 		<!--import the LeafletMap.js which control this web function-->
+		<script type="text/javascript" src="js/leaflet.ChineseTmsProviders.js" ></script>
 		<script type="text/javascript" src="js/LeafletMap.js" ></script>
-		<title>first esri-leaflet map</title>
+		<title>first leaflet map</title>
 	</head>
 	<body onload="init()">
 		<div id="map"></div>
-		<!--
-        	author：77211356@qq.com
-        	date：2018-9-22
-        	discribe：change basemap
-        -->
-		<!--<div id="basemaps-wrapper" class="leaflet-bar">
-		  <select name="basemaps" id="basemaps" onChange="changeBasemap(basemaps)">
-		    <option value="Imagery">Imagery</option>
-		    <option value="Streets">Streets</option>
-		    <option value="Topographic">Topographic</option>
-		    <option value="ImageryClarity">Imagery (Clarity)</option>
-		  </select>
-		</div>-->
 	</body>
 </html>
