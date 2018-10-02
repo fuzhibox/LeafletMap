@@ -48,13 +48,23 @@ function init(){
 	});
 	var Gaodeimage = L.layerGroup([Gaodeimgem, Gaodeimga]);
 	
+	
+	var popup = L.popup();
+	function onMapClick(e) {
+	    popup
+	        .setLatLng(e.latlng)
+	        .setContent("You clicked the map at " + e.latlng.toString())
+	        .openOn(map);
+	}
+	map.on('click', onMapClick);
+	
 	//地图服务地址
-	var url='http://47.106.158.161:6060/geoserver/Hubei/wms'
+	var url='http://localhost:8080/geoserver/Hubei/wms'
 	//构建专题地图服务连接串
 	const bounderLayer  = L.tileLayer.wms(url, {
 		layers: 'Hubei:JingzhouCountyBoundary',
 		format: "image/png",
-		crs: L.CRS.EPSG3857,
+		crs: L.CRS.EPSG4326,
 		opacity: 0.5,
 		transparent: true
 	});//.addTo(map);
