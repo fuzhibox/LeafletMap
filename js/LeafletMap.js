@@ -3,7 +3,7 @@ var map;
 function init(){	
 	//定义地图中心及缩放级别
 	map = L.map('map').setView([30.201885, 112.524585 ], 9);
-	
+
 /*
  * ******************************************底图加载************************************************************************************
  */
@@ -15,24 +15,8 @@ function init(){
 	    maxZoom: 18,
 	    id: 'mapbox.streets',
 	    accessToken: 'pk.eyJ1IjoibGl6eWFncnMiLCJhIjoiY2owOTAyMHo1MDdyMDJxb3VzOTB2czZmNSJ9.5iZSlr7iLwBh9ebR6KMGeg'
-	})
-	//天地图
-	var TDnormalm = L.tileLayer.chinaProvider('TianDiTu.Normal.Map', {//天地图常规地图
-			maxZoom: 18,minZoom: 4
-		}),
-		TDnormala = L.tileLayer.chinaProvider('TianDiTu.Normal.Annotion', {//天地图常规地图标注
-			maxZoom: 18,minZoom: 4
-		}),
-		TDimgm = L.tileLayer.chinaProvider('TianDiTu.Satellite.Map', {//天地图卫星影像
-			maxZoom: 18,minZoom: 4
-		}),
-		TDimga = L.tileLayer.chinaProvider('TianDiTu.Satellite.Annotion', {//天地图卫星影像标注
-			maxZoom: 18,minZoom: 4
-		});
-	//天地图、影像与标注图层组合
-	var TDnormal = L.layerGroup([TDnormalm, TDnormala]),//地图与标注组合
-		    TDimage = L.layerGroup([TDimgm, TDimga]); //影像与标注组合
-		//谷歌
+	}).addTo(map)
+	//谷歌
 	var GoogleMap = L.tileLayer.chinaProvider('Google.Normal.Map', {//谷歌地图
 			maxZoom: 18,minZoom: 4
 		}),
@@ -56,21 +40,20 @@ function init(){
  * ******************************************专题图层加载******************************************************************************************************************************
  */
 	//地图服务地址
-	var url='http://47.106.158.161:6060/geoserver/Hubei/wms'
+	var url='http://47.92.246.52:8080/geoserver/LightWebGIS/wms'
 	//构建专题地图服务连接串
 	const bounderLayer  = L.tileLayer.wms(url, {
-		layers: 'Hubei:JingzhouCountyBoundary',
+		layers: 'LightWebGIS:Search_Polygons',
 		format: "image/png",
 		crs: L.CRS.EPSG4326,
 		opacity: 0.5,
 		transparent: true
 	});
-	
-	//荆州县级行政边界GeoJSON服务的完整路径
-	var url = "http://47.106.158.161:6060/geoserver/Hubei/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=Hubei%3AJingzhouCountyBoundary&maxFeatures=50&outputFormat=application%2Fjson"
-	var JingzhouCountyBoundaryGeoJSON = L.geoJson(null, { 
+	//Search_Polygons边界GeoJSON服务的完整路径
+	var url = "http://47.92.246.52:8080/geoserver/LightWebGIS/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=LightWebGIS%3ASearch_Polygons&maxFeatures=50&outputFormat=application%2Fjson"
+	var Search_PolygonsGeoJSON = L.geoJson(null, { 
 		onEachFeature: function(feature, marker) {
-				marker.bindPopup('<h4 style="color:'+feature.properties.color+'">'+'行政区名称：'+ feature.properties.name+'<br/>行政区编码：'+feature.properties.pac);
+				marker.bindPopup('<h4 style="color:'+feature.properties.color+'">'+'行政区名称：'+ feature.properties.name+'<br/>行政区编码：'+feature.properties.code);
 		}
 	}).addTo(map);
 	//ajax调用
@@ -80,20 +63,20 @@ function init(){
 		outputFormat: 'text/javascript',
 		success: function(data) {
 			//将调用出来的结果添加至之前已经新建的空geojson图层中
-			JingzhouCountyBoundaryGeoJSON.addData(data);
+			Search_PolygonsGeoJSON.addData(data);
 		},
 	});
 
-	//长江中游四省行政边界GeoJSON服务的完整路径
-	var url = "http://47.106.158.161:6060/geoserver/Hubei/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=Hubei%3AYangziRiver_MiddlePro&maxFeatures=50&outputFormat=application%2Fjson"
+	//GDP_Polygon边界GeoJSON服务的完整路径
+	var url = "http://47.92.246.52:8080/geoserver/LightWebGIS/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=LightWebGIS%3AGDP_Polygon&maxFeatures=50&outputFormat=application%2Fjson"
 	//定义GeoJSON图层
-	var YangziRiver_MiddlePro_GeoJSON = L.geoJson(null, { 
+	var GDP_Polygon_GeoJSON = L.geoJson(null, { 
 		//回调函数
 		onEachFeature: function(feature, marker) {
 			//点击弹出信息窗口
 			marker.bindPopup('<h4 style="color:'+feature.properties.color+'">'+'行政区名称：'+ feature.properties.name+'<br/>行政区编码：'+feature.properties.code);
 		}
-	}).addTo(map);//默认打开图层
+	});//.addTo(map);//默认打开图层
 	//ajax调用
 	$.ajax({
 		url: url, //GeoJSON服务的完整路径
@@ -101,7 +84,7 @@ function init(){
 		outputFormat: 'text/javascript',
 		success: function(data) {
 			//将调用出来的结果添加至之前已经新建的空geojson图层中
-			YangziRiver_MiddlePro_GeoJSON.addData(data);
+			GDP_Polygon_GeoJSON.addData(data);
 		},
 	});
 
@@ -109,8 +92,6 @@ function init(){
 	var baseMaps = {
 	    "OpenstreetMap": openstreetmap,
 	    "MapboxStreets": mapboxstreet,
-	    "天地图": TDnormal,
-        "天地图影像": TDimage,
         "谷歌地图": GoogleMap,
         "谷歌影像": Googlesatellite,
         "高德地图": Gaode,
@@ -118,8 +99,8 @@ function init(){
 	};
 	//定义专题图层
 	var overlayMaps = {
-		"荆州县行政区边界GeoJSON": JingzhouCountyBoundaryGeoJSON ,
-		"长江中游四省行政边界GeoJSON": YangziRiver_MiddlePro_GeoJSON
+		"Search_Polygons": Search_PolygonsGeoJSON ,
+		"GDP_Polygon": GDP_Polygon_GeoJSON
 	};
 	//加载底图与专题图层控件
 	L.control.layers(baseMaps, overlayMaps).addTo(map);
@@ -143,7 +124,7 @@ function init(){
 	
 /*
  * *********************************************************************地名解析与查询定位****************************************************************
- */
+ *///地名解析与查询定位控件
 	map.addControl( new L.Control.Search({
 		url: 'http://nominatim.openstreetmap.org/search?format=json&q={s}',
 		jsonpParam: 'json_callback',
@@ -163,7 +144,7 @@ function init(){
 	//定义搜索控件
 	var searchControl = new L.Control.Search({
 		//定义搜索查询的图层
-		layer: JingzhouCountyBoundaryGeoJSON,
+		layer: Search_PolygonsGeoJSON,
 		//定义搜索关键字
 		propertyName: 'name',
 		//搜索提示Tips
