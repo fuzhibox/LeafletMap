@@ -54,7 +54,7 @@ function init(){
 		crs: L.CRS.EPSG4326,
 		opacity: 0.5,
 		transparent: true
-	}).addTo(map);
+	});
 	//Search_Polygon边界GeoJSON服务的完整路径
 	//var url = "http://39.100.31.4:8080/geoserver/LightWebGIS/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=LightWebGIS%3ASearch_Polygon&maxFeatures=50&outputFormat=application%2Fjson"
 	var url = "http://39.100.31.4:8080/geoserver/LightWebGIS/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=LightWebGIS%3ASearch_Polygon&maxFeatures=50&outputFormat=application%2Fjson"
